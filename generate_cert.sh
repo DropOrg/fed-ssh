@@ -1,0 +1,1 @@
+ssh-keygen -f /usr/local/pemstore/certs/$1 -t rsa -b 4096
