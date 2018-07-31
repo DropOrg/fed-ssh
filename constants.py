@@ -1,0 +1,1 @@
+CERTS_LOC = '/usr/local/pemstore/certs'
