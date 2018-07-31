@@ -1,22 +1,28 @@
 from flask import Flask
 from flask import jsonify
 from flask import request
-from flask_pymongo import PyMongo
 
 from CertManager import CertManager
 
-app = None
-mongo = PyMongo(app)
-cert_man = None
-
-def init_flask():
-    app = Flask(__name__)
-    cert_man = CertManager()
-    #app.config['MONGO_DBNAME'] = 'pemstore'
-    #app.config['MONGO_URI'] = 'mongodb://localhost:27017/pemstore'
+app = Flask(__name__)
+cm = CertManager()
+FLASK_PORT = 6128
 
 @app.route('/generate_cert', methods=['POST'])
 def generate_cert():
+    unique_name = request.json['name']
+    #all_certs = (subprocess.run(['ls', CERTS_LOC])).stdout
+
+    #star = mongo.db.stars
+    """
+    output = []
+    for s in star.find():
+        output.append({'name' : s['name'], 'distance' : s['distance']})
+    return jsonify({'result' : output})
+    """
+
+@app.route('/generate_link_cert', methods=['POST'])
+def generate_and_link_cert():
     unique_name = request.json['name']
     #all_certs = (subprocess.run(['ls', CERTS_LOC])).stdout
 
@@ -51,5 +57,4 @@ def add_star():
     return jsonify({'result' : output})
 
 if __name__ == '__main__':
-    init_flask()
-    app.run(debug=True)
+    app.run(debug=True, port=FLASK_PORT)
