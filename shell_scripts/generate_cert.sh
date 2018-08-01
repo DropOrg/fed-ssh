@@ -1,5 +1,5 @@
-mkdir /usr/local/pemstore/certs/$1
-cd /usr/local/pemstore/certs/$1
+mkdir /usr/local/fedssh/certs/$1
+cd /usr/local/fedssh/certs/$1
 
 GEN_KEY="ssh-keygen -f $1 -t rsa -b 4096";
 EMPTY_PASS="";

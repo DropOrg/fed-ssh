@@ -1,12 +1,22 @@
 from flask import Flask
 from flask import jsonify
 from flask import request
+from flask_pymongo import PyMongo
 
 from CertManager import CertManager
+from MongoManager import MongoManager
 
 app = Flask(__name__)
+app.config['MONGO_DBNAME'] = 'fedssh'
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/fedssh'
+
 cm = CertManager()
+mm = MongoManager(PyMongo(app))
 FLASK_PORT = 6128
+
+@app.route('/all_servers', methods=['GET'])
+def get_all_servers():
+    return jsonify({'servers': mm.get_all_servers()})
 
 @app.route('/generate_cert', methods=['POST'])
 def generate_cert():
@@ -34,9 +44,10 @@ def generate_and_link_cert():
     return jsonify({'result' : output})
     """
 
-
+"""
 @app.route('/star/', methods=['GET'])
 def get_one_star(name):
+
     star = mongo.db.stars
     s = star.find_one({'name' : name})
     output = None
@@ -55,6 +66,9 @@ def add_star():
     new_star = star.find_one({'_id': star_id })
     output = {'name' : new_star['name'], 'distance' : new_star['distance']}
     return jsonify({'result' : output})
+"""
 
 if __name__ == '__main__':
-    app.run(debug=True, port=FLASK_PORT)
+   #cm.add_cert('test')
+   #mm.add_server('test@0.0.0.0', 'test_alias', 'test-servers')
+   app.run(debug=True, port=FLASK_PORT)

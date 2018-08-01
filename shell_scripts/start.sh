@@ -1,0 +1,3 @@
+# start mongo
+
+# start flask 

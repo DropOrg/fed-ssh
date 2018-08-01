@@ -1,11 +1,11 @@
 import subprocess 
-from constants import CERTS_LOC
+from constants import CERTS_LOC, SCRIPTS_LOC
 
 class CertManager:
 	def __init__(self):
 		self.sudo = 'sudo'
-		self.gen_cert_exec = './generate_cert.sh'
-		self.upl_cert_exec = './upload_cert.sh'
+		self.gen_cert_exec = './{}generate_cert.sh'.format(SCRIPTS_LOC)
+		self.upl_cert_exec = './{}upload_cert.sh'.format(SCRIPTS_LOC)
 
 	def get_all_certs(self):
 		all_certs = (subprocess.run(['ls', CERTS_LOC], stdout=subprocess.PIPE)).stdout
