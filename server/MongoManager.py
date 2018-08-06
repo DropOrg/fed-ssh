@@ -8,6 +8,7 @@ class MongoManager:
 		self.mongo_client = mongo_client
 		self.db = self.mongo_client.db['fedssh']
 		self.servers = self.db['servers']
+		self.certs = self.db['certs']
 
 	### GETTERS ###
 	def get_server(self, alias):
@@ -20,8 +21,10 @@ class MongoManager:
 			all_servers.append(serv)
 		return tuple(all_servers)
 
+	def add_cert(self, user, )
+
 	### SETTERS ###
-	def add_server(self, ssh_string, alias, cert_name):
+	def add_server(self, user, ssh_string, alias, cert_name):
 		# check for already existing server
 		all_servers = self.get_all_servers()
 		for serv in all_servers:
@@ -30,6 +33,7 @@ class MongoManager:
 
 		# insert new server data
 		new_server = {
+		'user': user,
 		'server_ssh_string': ssh_string,
 		'alias': alias, 
 		'cert_name': cert_name,
