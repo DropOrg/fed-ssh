@@ -21,7 +21,16 @@ class MongoManager:
 			all_servers.append(serv)
 		return tuple(all_servers)
 
-	def add_cert(self, user, )
+	def store_cert(self, user, alias, cert_path):
+		with open(cert_path, 'rb') as cert_file:
+			cert_bytes = cert_file.read()
+			new_cert = {'user': user, 'alias': alias, 'cert_bytes': cert_bytes}
+			self.certs.insert_one(new_cert)
+
+		return {'result': 'STORED CERT {}_{} IN CERTS'.format(user, alias)}
+
+	def rm_cert(self, user, alias):
+		pass
 
 	### SETTERS ###
 	def add_server(self, user, ssh_string, alias, cert_name):
