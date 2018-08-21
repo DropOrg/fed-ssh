@@ -30,7 +30,7 @@ class MongoManager:
 		return {'result': 'STORED CERT {}_{} IN CERTS'.format(user, alias)}
 
 	def rm_cert(self, user, alias):
-		pass
+		self.certs.remove_one({'alias': alias, 'user': user})
 
 	### SETTERS ###
 	def add_server(self, user, ssh_string, alias, cert_name):
