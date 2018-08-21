@@ -52,6 +52,6 @@ class MongoManager:
 		self.servers.insert_one(new_server)
 		return {'result': 'Created SERVER {} with CERT {}'.format(alias, cert_name)}
 
-	def remove_server(self, alias):
-		self.servers.remove_one({'alias': alias})
+	def rm_server(user, alias):
+		self.servers.remove_one({'alias': alias, 'user':user})
 

@@ -13,10 +13,17 @@ def add_server(user, alias, ssh_string):
 	mm.add_server(user, ssh_string, alias, cert_name)
 	cm.upload_cert(cert_name, ssh_string)
 
+	# store .pem cert as bytes in db
 	cert_path = cm.get_cert_path(cert_name) 
-	
+	mm.store_cert(user, alias, cert_path)
 
-def remove_server 
+	# remove temporary cert 
+	cm.rm_cert(cert_name)
+	
+def remove_server(user, alias):
+	mm.rm_server(user, alias)
+	mm.rm_cert(user, alias)
+
 if __name__ == '__main__':
 	action, target = sys.argv[1:3]
 	fedssh_args = sys.argv[3:]
@@ -27,3 +34,4 @@ if __name__ == '__main__':
 
 	if action == 'remove':
 		if target == 'server':
+			rm_server(*fedssh_args)
