@@ -24,6 +24,14 @@ def remove_server(user, alias):
 	mm.rm_server(user, alias)
 	mm.rm_cert(user, alias)
 
+def tell(user, alias, script_path):
+	server_meta = mm.get_server(user, alias)
+	host_name = server_meta['ssh_string']
+
+	# make script executable, pass to server 
+	subprocess.run(['chmod', '+x', script_path])
+	subprocess.run(['ssh', host_name, '<', script_path])
+
 if __name__ == '__main__':
 	action, target = sys.argv[1:3]
 	fedssh_args = sys.argv[3:]
@@ -32,6 +40,9 @@ if __name__ == '__main__':
 		if target == 'server':
 			add_server(*fedssh_args)
 
-	if action == 'remove':
+	elif action == 'remove':
 		if target == 'server':
 			rm_server(*fedssh_args)
+
+	elif action == 'tell':
+		tell(target, *fedssh_args)
