@@ -26,7 +26,7 @@ def remove_server(user, alias):
 
 def tell(user, alias, script_path):
 	server_meta = mm.get_server(user, alias)
-	host_name = server_meta['ssh_string']
+	host_name = server_meta['server_ssh_string']
 
 	# make script executable, pass to server 
 	subprocess.run(['chmod', '+x', script_path])
