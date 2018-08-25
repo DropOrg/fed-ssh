@@ -55,13 +55,21 @@ def sync(user):
 	for cert_meta in dl_list:
 		mm.download_cert(*cert_meta)
 
+def __purge_cert(user, alias):
+	mm.rm_cert(user, alias)
+	cm.rm_cert(user, alias)
+
 def purge(user=None, alias=None, all_local=False):
 	if user is not None and alias is not None:
-		mm.rm_cert(user, alias)
-		cm.rm_cert(user, alias)
+		__purge_cert(user, alias)
+		return 
+
 	if all_local:
 		all_local_certs = cm.get_all_certs()
-
+		for cert_name in all_local_certs:
+			# split cert_name into user & alias
+			c_user, c_alias = cert_name.split('_')
+			__purge_cert(c_user, c_alias)
 
 if __name__ == '__main__':
 	action, target = sys.argv[1:3]
@@ -77,3 +85,10 @@ if __name__ == '__main__':
 
 	elif action == 'tell':
 		tell(target, *fedssh_args)
+
+	elif action == 'purge':
+		if target == 'all':
+			purge(all_local=True)
+
+	elif action == 'sync':
+		sync(target)
