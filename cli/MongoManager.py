@@ -1,5 +1,6 @@
 ### IMPORTS ###
 import time
+from constants import PERM_CERTS_LOC
 
 ### MAIN ###
 
@@ -9,18 +10,21 @@ class MongoManager:
 		self.db = self.mongo_client.db['fedssh']
 		self.servers = self.db['servers']
 		self.certs = self.db['certs']
-		self.perm_certs_path = '/usr/local/fedssh/perm_certs'
+		self.perm_certs_path = PERM_CERTS_LOC
 
 	### GETTERS ###
 	def get_server(self, alias):
 		return self.servers.find_one({'alias': alias})
 
-	def get_all_servers(self):
+	def get_all_servers(self, user):
 		all_servers = []
-		for serv in self.servers.find({}):
+		for serv in self.servers.find({'user': user}):
 			serv.pop('_id')
 			all_servers.append(serv)
 		return tuple(all_servers)
+
+	def cert_exists(self, user, alias):
+		return self.certs.find({'user': user, 'alias': alias}).count() > 0		
 
 	def __get_cert_as_str(self, user, alias):
 		user_alias = self.certs.find_one(

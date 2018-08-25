@@ -18,7 +18,7 @@ def add_server(user, alias, ssh_string):
 	mm.store_cert(user, alias, cert_path)
 
 	# remove temporary cert 
-	cm.rm_cert(cert_name)
+	cm.rm_temp_cert(cert_name)
 	
 def remove_server(user, alias):
 	mm.rm_server(user, alias)
@@ -33,9 +33,32 @@ def tell(user, alias, script_path):
 	subprocess.run(['chmod', '+x', script_path])
 	subprocess.run(['ssh', host_name, '<', script_path])
 
+"""
 def download_cert(user, alias):
+	mm.download_cert(user, alias)
+"""
 
-def sync(user, alias):
+def sync(user):
+	all_servers = mm.get_all_servers(user)
+	all_local_certs = cm.get_all_certs()
+	dl_list = []
+
+	for serv in all_servers:
+		s_user, s_alias = serv['user'], serv['alias']
+		cert_name = s_user + '_' + s_alias
+		if cert_name not in all_local_certs:
+			dl_list.append((s_user, s_alias))
+
+	for cert_meta in dl_list:
+		mm.download_cert(*cert_meta)
+
+def purge(user=None, alias=None, all_local=False):
+	if user is not None and alias is not None:
+		mm.rm_cert(user, alias)
+		cm.rm_cert(user, alias)
+	if all_local:
+		all_local_certs = cm.get_all_certs()
+
 
 if __name__ == '__main__':
 	action, target = sys.argv[1:3]
