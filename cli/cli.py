@@ -23,6 +23,7 @@ def add_server(user, alias, ssh_string):
 def remove_server(user, alias):
 	mm.rm_server(user, alias)
 	mm.rm_cert(user, alias)
+	cm.rm_cert((user + '_' + alias))
 
 def tell(user, alias, script_path):
 	server_meta = mm.get_server(user, alias)
@@ -31,6 +32,10 @@ def tell(user, alias, script_path):
 	# make script executable, pass to server 
 	subprocess.run(['chmod', '+x', script_path])
 	subprocess.run(['ssh', host_name, '<', script_path])
+
+def download_cert(user, alias):
+
+def sync(user, alias):
 
 if __name__ == '__main__':
 	action, target = sys.argv[1:3]

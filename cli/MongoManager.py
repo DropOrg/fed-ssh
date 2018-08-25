@@ -9,6 +9,7 @@ class MongoManager:
 		self.db = self.mongo_client.db['fedssh']
 		self.servers = self.db['servers']
 		self.certs = self.db['certs']
+		self.perm_certs_path = '/usr/local/fedssh/perm_certs'
 
 	### GETTERS ###
 	def get_server(self, alias):
@@ -21,6 +22,11 @@ class MongoManager:
 			all_servers.append(serv)
 		return tuple(all_servers)
 
+	def __get_cert_as_str(self, user, alias):
+		user_alias = self.certs.find_one(
+			{'user':user, 'alias':alias})
+		return user_alias['cert_bytes'].decode('utf-8')
+
 	def store_cert(self, user, alias, cert_path):
 		with open(cert_path, 'rb') as cert_file:
 			cert_bytes = cert_file.read()
@@ -28,6 +34,13 @@ class MongoManager:
 			self.certs.insert_one(new_cert)
 
 		return {'result': 'STORED CERT {}_{} IN CERTS'.format(user, alias)}
+
+	def download_cert(self, user, alias):
+		cert_name = user + '_' + alias + '.pem'
+		dl_path = self.perm_certs_path + '/' + cert_name 
+		with open(dl_path, 'w') as cert_copy:
+			cert_copy.write(self.__get_cert_as_str(user, alias))
+		return dl_path
 
 	def rm_cert(self, user, alias):
 		self.certs.remove_one({'alias': alias, 'user': user})
