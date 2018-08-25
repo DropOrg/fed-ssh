@@ -19,6 +19,9 @@ def add_server(user, alias, ssh_string):
 
 	# remove temporary cert 
 	cm.rm_temp_cert(cert_name)
+
+	# download db cert
+	mm.download_cert(user, alias)
 	
 def remove_server(user, alias):
 	mm.rm_server(user, alias)
