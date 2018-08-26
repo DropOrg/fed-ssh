@@ -18,7 +18,7 @@ def add_server(user, alias, ssh_string):
 	mm.store_cert(user, alias, cert_path)
 
 	# remove temporary cert 
-	cm.rm_temp_cert(cert_name)
+	cm.rm_temp_cert(user, alias)
 
 	# download db cert
 	mm.download_cert(user, alias)
@@ -35,11 +35,6 @@ def tell(user, alias, script_path):
 	# make script executable, pass to server 
 	subprocess.run(['chmod', '+x', script_path])
 	subprocess.run(['ssh', host_name, '<', script_path])
-
-"""
-def download_cert(user, alias):
-	mm.download_cert(user, alias)
-"""
 
 def sync(user):
 	all_servers = mm.get_all_servers(user)

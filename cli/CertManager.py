@@ -54,8 +54,9 @@ class CertManager:
 			print('ERROR: CERT {} does not exist'.format(cert_name))
 			return False
 
-	def rm_temp_cert(self, cert_path):
-		self.__delete_cert(cert_path)
+	def rm_temp_cert(self, user, alias):
+		temp_cert_loc = '{}_{}_{}'.format(CERTS_LOC, user, alias)
+		self.__delete_cert(temp_cert_loc)
 
 	"""
 	def link(self, cert_name, ssh_target):
