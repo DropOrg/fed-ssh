@@ -29,6 +29,7 @@ def remove_server(user, alias):
 	cm.rm_cert((user + '_' + alias))
 
 def tell(user, alias, script_path):
+	# get metadata from db for hostname
 	server_meta = mm.get_server(user, alias)
 	host_name = server_meta['server_ssh_string']
 
@@ -37,38 +38,49 @@ def tell(user, alias, script_path):
 	subprocess.run(['ssh', host_name, '<', script_path])
 
 def sync(user):
+	# get all server and cert metadata
 	all_servers = mm.get_all_servers(user)
 	all_local_certs = cm.get_all_certs()
 	dl_list = []
 
+	# find all certs not locally downloaded
 	for serv in all_servers:
 		s_user, s_alias = serv['user'], serv['alias']
 		cert_name = s_user + '_' + s_alias
 		if cert_name not in all_local_certs:
 			dl_list.append((s_user, s_alias))
 
+	# download all missing certs
 	for cert_meta in dl_list:
 		mm.download_cert(*cert_meta)
 
-def __purge_cert(user, alias):
+def __purge_server(user, alias):
+	# remove local cert and stored cert data
 	mm.rm_cert(user, alias)
 	cm.rm_cert(user, alias)
 
+	# remove all server metadata
+	mm.rm_server(user, alias)
+
 def purge(user=None, alias=None, all_local=False):
+	# delete specific local cert & stored metadata
 	if user is not None and alias is not None:
-		__purge_cert(user, alias)
+		__purge_server(user, alias)
 		return 
 
+	# delete all local certs & all server metadata
 	if all_local:
 		all_local_certs = cm.get_all_certs()
 		for cert_name in all_local_certs:
 			# split cert_name into user & alias
 			c_user, c_alias = cert_name.split('_')
-			__purge_cert(c_user, c_alias)
+			__purge_server(c_user, c_alias)
 
 if __name__ == '__main__':
 	action, target = sys.argv[1:3]
 	fedssh_args = sys.argv[3:]
+
+	# todo: add random sync 
 
 	if action == 'add':
 		if target == 'server':
