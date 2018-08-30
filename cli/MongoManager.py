@@ -50,7 +50,7 @@ class MongoManager:
 		self.certs.remove_one({'alias': alias, 'user': user})
 
 	### SETTERS ###
-	def add_server(self, user, ssh_string, alias, cert_name):
+	def add_server(self, user, ssh_string, alias, cert_name, group=None):
 		# check for already existing server
 		all_servers = self.get_all_servers()
 		for serv in all_servers:
@@ -60,8 +60,9 @@ class MongoManager:
 		# insert new server data
 		new_server = {
 		'user': user,
-		'server_ssh_string': ssh_string,
 		'alias': alias, 
+		'group': group,
+		'server_ssh_string': ssh_string,
 		'cert_name': cert_name,
 		'time_added': time.time()
 		}
